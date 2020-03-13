@@ -25,6 +25,26 @@
         "value": "${rails_max_threads}"
       },
       {
+        "name": "SKYLIGHT_AUTHENTICATION",
+        "value": "${skylight_authentication}"
+      },
+      {
+        "name": "SKYLIGHT_ENABLED",
+        "value": "${skylight_enabled}"
+      },
+      {
+        "name": "SKYLIGHT_ENABLE_SIDEKIQ",
+        "VALUE": "${skylight_enable_sidekiq}"
+      },
+      {
+        "name": "SKYLIGHT_ENV",
+        "value": "${skylight_env}"
+      },
+      {
+        "name": "SKYLIGHT_IGNORED_ENDPOINTS",
+        "value": "${skylight_ignored_endpoints}"
+      },
+      {
         "name": "ROLLBAR_ENV",
         "value": "${environment}"
       },
