@@ -155,12 +155,12 @@
         "value": "${skylight_authentication}"
       },
       {
-        "name": "SKYLIGHT_ENV",
-        "value": "${skylight_env}"
-      },
-      {
         "name": "SKYLIGHT_ENABLED",
         "value": "${skylight_enabled}"
+      },
+      {
+        "name": "SKYLIGHT_ENV",
+        "value": "${skylight_env}"
       },
       {
         "name": "SKYLIGHT_IGNORED_ENDPOINTS",
