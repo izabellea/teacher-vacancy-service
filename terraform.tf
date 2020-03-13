@@ -171,6 +171,7 @@ module "ecs" {
   subscription_key_generator_salt              = "${var.subscription_key_generator_salt}"
   skylight_authentication                      = "${var.skylight_authentication}"
   skylight_env                                 = "${var.skylight_env}"
+  skylight_enable_sidekiq                      = "${var.skylight_enable_sidekiq}"
   skylight_enabled                             = "${var.skylight_enabled}"
   skylight_ignored_endpoints                   = "${var.skylight_ignored_endpoints}"
   notify_key                                   = "${var.notify_key}"

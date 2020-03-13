@@ -80,6 +80,7 @@ variable "google_api_json_key" {
 variable "google_analytics_profile_id" {}
 variable "skylight_authentication" {}
 variable "skylight_env" {}
+variable "skylight_enable_sidekiq" {}
 variable "skylight_enabled" {}
 variable "skylight_ignored_endpoints" {}
 variable "notify_key" {}

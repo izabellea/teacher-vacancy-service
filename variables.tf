@@ -415,6 +415,7 @@ variable "audit_subscription_creation_worksheet_gid" {}
 variable "audit_search_event_worksheet_gid" {}
 variable "skylight_authentication" {}
 variable "skylight_env" {}
+variable "skylight_enable_sidekiq" {}
 variable "skylight_enabled" {}
 
 variable "skylight_ignored_endpoints" {

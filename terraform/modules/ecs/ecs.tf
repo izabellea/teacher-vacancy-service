@@ -164,6 +164,7 @@ data "template_file" "web_container_definition" {
     google_analytics_profile_id                  = "${var.google_analytics_profile_id}"
     skylight_authentication                      = "${var.skylight_authentication}"
     skylight_env                                 = "${var.skylight_env}"
+    skylight_enable_sidekiq                      = "${var.skylight_enable_sidekiq}"
     skylight_enabled                             = "${var.skylight_enabled}"
     skylight_ignored_endpoints                   = "${var.skylight_ignored_endpoints}"
     notify_key                                   = "${var.notify_key}"
@@ -306,6 +307,12 @@ data "template_file" "worker_container_definition" {
     rollbar_access_token = "${var.rollbar_access_token}"
     redis_cache_url      = "${var.redis_cache_url}"
     redis_queue_url      = "${var.redis_queue_url}"
+
+    skylight_authentication                      = "${var.skylight_authentication}"
+    skylight_env                                 = "${var.skylight_env}"
+    skylight_enable_sidekiq                      = "${var.skylight_enable_sidekiq}"
+    skylight_enabled                             = "${var.skylight_enabled}"
+    skylight_ignored_endpoints                   = "${var.skylight_ignored_endpoints}"
 
     pp_transactions_by_channel_token             = "${var.pp_transactions_by_channel_token}"
     google_api_json_key                          = "${replace(jsonencode(var.google_api_json_key), "/([\"\\\\])/", "\\$1")}"
