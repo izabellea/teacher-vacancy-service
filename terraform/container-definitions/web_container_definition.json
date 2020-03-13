@@ -159,6 +159,10 @@
         "value": "${skylight_enabled}"
       },
       {
+        "name": "SKYLIGHT_ENABLE_SIDEKIQ",
+        "VALUE": "${skylight_enable_sidekiq}"
+      },
+      {
         "name": "SKYLIGHT_ENV",
         "value": "${skylight_env}"
       },
