@@ -48,29 +48,44 @@ class School < ApplicationRecord
 
   def self.bigquery_load(bigquery: Bigquery.new)
     dataset = bigquery.dataset(BIGQUERY_DATASET)
-    table_name = [BIGQUERY_TABLE_PREFIX, self.name.to_s.downcase.pluralize].join('_')
-    table = dataset.table(table_name)
-    table = dataset.create_table(table_name) do |schema|
+    table_name = [1, BIGQUERY_TABLE_PREFIX, self.name.to_s.downcase.pluralize].join('_')
+    dataset.table(table_name)&.delete
+    table = dataset.table(table_name) || dataset.create_table(table_name) do |schema|
       bigquery_schema.each do |column_name, column_type|
         schema.send(column_type, column_name)
       end
-    end if table.nil?
-
-    find_in_batches(batch_size: 500) do |batch|
-      insert_response = table.insert batch.map(&:bigquery_data)
-      Rails.logger.info({ bigquery: table_name, insert_response: insert_response, records: batch.size }.to_json)
     end
+
+    total = count
+
+    inserter = table.insert_async do |result|
+      if result.error?
+        Rails.logger.error({ error: result.error }.to_json)
+      else
+        Rails.logger.info({ inserted: result.insert_count, remaining: total, error_count: result.error_count }.to_json)
+        total -= result.insert_count
+      end
+    end
+
+    rows = []
+    find_in_batches(batch_size: 5000) do |batch|
+      rows << batch.map(&:bigquery_data)
+      total -= batch.size
+      Rails.logger.info({ remaining: total }.to_json)
+    end
+
+    inserter.insert rows.flatten
+    inserter.stop.wait!
   end
 
   def bigquery_export(bigquery: Bigquery.new)
     dataset = bigquery.dataset(BIGQUERY_DATASET)
     table_name = [BIGQUERY_TABLE_PREFIX, self.class.name.to_s.downcase.pluralize].join('_')
-    table = dataset.table(table_name)
-    table = dataset.create_table(table_name) do |schema|
+    table = dataset.table(table_name) || dataset.create_table(table_name) do |schema|
       self.class.bigquery_schema.each do |column_name, column_type|
         schema.send(column_type, column_name)
       end
-    end if table.nil?
+    end
 
     table.insert(bigquery_data)
   end
@@ -109,12 +124,12 @@ class School < ApplicationRecord
       data = nil if data.blank?
       data = Date.parse(data).to_s(:db) if data.is_a?(String) && data.match?(/^\d{2}\-\d{2}\-\d{4}/)
       data = data.to_i if data.is_a?(String) && data.match?(/^\d+$/)
-      @bigquery_data[data_key_name(key)] = data
+      @bigquery_data[self.class.data_key_name(key)] = data
     end
     @bigquery_data
   end
 
-  def data_key_name(key)
+  def self.data_key_name(key)
     "data_#{key.chomp(')').gsub(/\W+/, '_').downcase}"
   end
 
