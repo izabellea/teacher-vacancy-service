@@ -48,7 +48,7 @@ class School < ApplicationRecord
 
   def self.bigquery_load(bigquery: Bigquery.new)
     dataset = bigquery.dataset(BIGQUERY_DATASET)
-    table_name = [1, BIGQUERY_TABLE_PREFIX, self.name.to_s.downcase.pluralize].join('_')
+    table_name = [BIGQUERY_TABLE_PREFIX, self.name.to_s.downcase.pluralize].join('_')
     dataset.table(table_name)&.delete
     table = dataset.table(table_name) || dataset.create_table(table_name) do |schema|
       bigquery_schema.each do |column_name, column_type|
@@ -67,14 +67,10 @@ class School < ApplicationRecord
       end
     end
 
-    rows = []
-    find_in_batches(batch_size: 5000) do |batch|
-      rows << batch.map(&:bigquery_data)
-      total -= batch.size
-      Rails.logger.info({ remaining: total }.to_json)
+    find_in_batches(batch_size: inserter.max_rows) do |batch|
+      inserter.insert batch.map(&:bigquery_data)
     end
 
-    inserter.insert rows.flatten
     inserter.stop.wait!
   end
 
@@ -107,7 +103,7 @@ class School < ApplicationRecord
     self.class.columns.map do |c|
       next if drop_these_attributes.include?(c.name)
       data = self.send(c.name)
-      data = data.to_s(:db) if (c.type == :datetime || c.type == :date)
+      data = data.to_s(:db) if c.type == :datetime || c.type == :date
       data = data.to_a if c.name == 'geolocation'
       @bigquery_data[c.name] = data
     end
@@ -169,9 +165,9 @@ class School < ApplicationRecord
 
     gias_schema = where.not(gias_data: nil).first.gias_data
 
-    gias_schema.sort_by{ |k, _| k }.map do |key, value|
+    gias_schema.sort_by { |k, _| k }.map do |key, value|
       data_type = :string
-      data_type = :date if key.match(/date/i)
+      data_type = :date if key.match?(/date/i)
       data_type = :integer if value.match(/^\d+$/) && !key.match(/diocese/i)
       @bigquery_schema[data_key_name(key)] = data_type
     end
