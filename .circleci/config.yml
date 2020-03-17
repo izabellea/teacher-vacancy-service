@@ -21,12 +21,12 @@ workflows:
             branches:
               only:
                 - develop
-  scheduled-smoke-tests:
-    triggers:
-      - schedule:
-          cron: "5,10,15,20,25,30,35,40,45,50,55,0 * * * *"
-          filters:
-            branches:
-              only: master
-    jobs:
-      - run_smoke_test
+  # scheduled-smoke-tests:
+  #   triggers:
+  #     - schedule:
+  #         cron: "5,10,15,20,25,30,35,40,45,50,55,0 * * * *"
+  #         filters:
+  #           branches:
+  #             only: master
+  #   jobs:
+  #     - run_smoke_test
