@@ -5,7 +5,7 @@ ul.pagination {
   li {
     display: inline-block;
 
-    &.current, a {
+    &.current, a, span {
       @include govuk-font(19, $weight: bold);
       color: govuk-colour("blue");
       display: inline-block;

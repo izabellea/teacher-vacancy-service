@@ -408,7 +408,7 @@ en:
       location: 'Location'
       location_hint: 'Enter a city, town or postcode'
       use_current_location: 'use your current location'
-      radius: 'Radius'
+      radius: 'Within a radius of'
       subject: 'Subject'
       subject_hint: 'Maths, for example'
       job_title: 'Job title'
